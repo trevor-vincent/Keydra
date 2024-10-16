@@ -13,7 +13,7 @@
 - **Dynamic Window Attributes**: Customize the window title and colors dynamically via the command line for each session.
     </td>
     <td>
-      <img src="keydra.png" alt="Keydra Example" style="width:1000px;"/>
+      <img src="keydra.png" alt="Keydra Example" style="width:1500px;"/>
     </td>
   </tr>
 </table>
