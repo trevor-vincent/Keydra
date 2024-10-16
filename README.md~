@@ -1,0 +1,55 @@
+# Keydra
+
+Inspired by emacs-hydra, Keydra addresses the challenge of remembering numerous linux shell functions by allowing users to create menus of keybinds, referred to as "keydras." This approach makes it possible to manage more commands than traditional keybind systems would feasibly allow.
+
+## Features
+
+- **Infinite Keybindings**: Organize and trigger an unlimited number of commands via custom keybindings.
+- **Descriptive Command Names and Help Text**: Enhance command recall with helpful descriptions right in the interface.
+- **Keybinds are set through human-readable text files**: Easily configure keybinds and command menus using simple text files.
+- **Dynamic Window Attributes**: Customize the window title and colors dynamically via the command line for each session.
+
+## Installation
+
+Keydra requires Node.js and npm to run. Follow these steps to clone the repository and install dependencies:
+
+## Examples
+
+Let's say you want to autoconnect to some bluetooth devices, but you don't want to type the bluetoothctl commands in a shell with the MAC address.
+
+Write this bluetooth.ini
+
+``` text
+BlueTooth Pair With Echo, F1, source ~/.bashrc; bluetooth_pair_with_echo_device
+BlueTooth Pair With Buds, F2, source ~/.bashrc; bluetooth_pair_with_buds
+```
+
+This binds F1 and F2 to the functions in my .bashrc that pair with my buds and echo, they wrap the bluetoothctl command so that I don't have to remember it. The Keydra would be ran as follows
+
+keydra --config bluetooth.ini --title bluetooth
+
+This launches the menu
+
+Now pressing F1 or F2 will pair the bluetooth device and close the menu.
+
+## Customizing the Keydra attributes
+
+You can change the title, colors and shell interpreter.
+
+## Using with the i3 window manager
+
+If you are using the i3 window manager, in the i3 config please add the lines
+
+``` text
+
+```
+
+You can then bind keydras to keys in the i3 config as follows
+
+
+## 
+
+```bash
+git clone https://github.com/MindKingAI/keydra.git
+cd keydra
+npm install
