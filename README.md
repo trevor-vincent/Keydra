@@ -23,7 +23,7 @@
 Run 
 
 ``` bash
-electron --disable-gpu -c Keydra.ini -t Keydra --he 550 --wi 400
+electron -c Keydra.ini -t Keydra --he 550 --wi 400
 ```
 
 to get the example image above.
