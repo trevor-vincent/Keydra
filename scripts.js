@@ -1,7 +1,22 @@
 const { ipcRenderer, shell } = require("electron");
 
-ipcRenderer.on("initialize", (event, { commands, title }) => {
+let configPath = "";
+let textEditor = "nano";
+
+ipcRenderer.on("initialize", (event, { commands, title, configPath: cfgPath, textEditor: editor }) => {
   document.getElementById("title").textContent = title;
+  configPath = cfgPath;
+  textEditor = editor || "nano";
+  
+  // Add click event to title to open config file
+  const titleElement = document.getElementById("title");
+  titleElement.style.cursor = "pointer";
+  titleElement.title = "Click to edit config file";
+  titleElement.addEventListener("click", (event) => {
+    event.preventDefault();
+    ipcRenderer.send("open-config", { configPath, textEditor });
+  });
+  
   const container = document.getElementById("commandsContainer");
   container.innerHTML = "";
 

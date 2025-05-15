@@ -23,7 +23,14 @@ body, html {
     text-align: center;
     font-size: 3em;
     margin: 20px 0;
+    transition: all 0.3s ease;
     /* animation: textPulse 2s infinite alternate; */
+}
+
+#title:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px #00d0ff, 0 0 20px #00d0ff;
+    cursor: pointer;
 }
 
 #commandsContainer {

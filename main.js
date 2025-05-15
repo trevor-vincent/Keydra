@@ -7,9 +7,21 @@ const {
 } = require("electron");
 const { spawn } = require("child_process");
 const fs = require("fs");
+const path = require("path");
 const yargs = require("yargs");
 
 function executeCommand(command) {
+  const child = spawn(command, {
+    shell: true,
+    detached: true,
+    stdio: "ignore",
+  });
+  child.unref();
+  app.quit();
+}
+
+function openConfigInEditor(configPath, editor) {
+  const command = `${editor} "${configPath}"`;
   const child = spawn(command, {
     shell: true,
     detached: true,
@@ -25,6 +37,47 @@ function registerGlobalShortcuts(commands) {
       executeCommand(cmd.command);
     });
   });
+}
+
+function parseConfigFile(fileContent) {
+  const lines = fileContent.split("\n");
+  const config = {
+    height: null,
+    width: null,
+    commands: [],
+  };
+
+  lines.forEach((line) => {
+    line = line.trim();
+    if (!line) return;
+
+    // Parse height and width from comments
+    if (line.startsWith("#")) {
+      const heightMatch = line.match(/^#\s*height:\s*(\d+)/i);
+      const widthMatch = line.match(/^#\s*width:\s*(\d+)/i);
+
+      if (heightMatch) {
+        config.height = parseInt(heightMatch[1]);
+      } else if (widthMatch) {
+        config.width = parseInt(widthMatch[1]);
+      }
+      return;
+    }
+
+    // Parse commands
+    if (!line.startsWith("#")) {
+      const parts = line.split(",").map((part) => part.trim());
+      if (parts.length === 3) {
+        config.commands.push({
+          name: parts[0],
+          keybind: parts[1],
+          command: parts[2],
+        });
+      }
+    }
+  });
+
+  return config;
 }
 
 function createWindow() {
@@ -53,35 +106,31 @@ function createWindow() {
       type: "number",
       default: 800,
     })
+    .option("text-editor", {
+      alias: "e",
+      description: "Text editor to open the config file (default: nano)",
+      type: "string",
+      default: "nano",
+    })
     .help()
     .alias("help", "h").argv;
 
   const fullPath = argv.config;
-  let data;
+  let fileContent;
   try {
-    data = fs.readFileSync(fullPath, "utf8");
+    fileContent = fs.readFileSync(fullPath, "utf8");
   } catch (err) {
     console.error(`Failed to read configuration file at ${fullPath}`, err);
     app.quit();
     return;
   }
 
-  const commands = data
-    .trim()
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"))
-    .map((line) => {
-      const parts = line.split(",").map((part) => part.trim());
-      return {
-        name: parts[0],
-        keybind: parts[1],
-        command: parts[2],
-      };
-    });
+  const config = parseConfigFile(fileContent);
 
-  const windowWidth = argv.width || 600;
-  const windowHeight = argv.height || 800;
+  // Config file values overwrite CLI args, fall back to CLI args or defaults if not in config
+  const windowWidth = config.width !== null ? config.width : argv.width || 600;
+  const windowHeight =
+    config.height !== null ? config.height : argv.height || 800;
 
   const win = new BrowserWindow({
     width: windowWidth,
@@ -110,7 +159,12 @@ function createWindow() {
   });
 
   win.webContents.once("did-finish-load", () => {
-    win.webContents.send("initialize", { commands, title: argv.title });
+    win.webContents.send("initialize", {
+      commands: config.commands,
+      title: argv.title,
+      configPath: fullPath,
+      textEditor: argv.textEditor,
+    });
   });
 
   win.on("ready-to-show", function () {
@@ -118,14 +172,13 @@ function createWindow() {
     win.focus();
   });
 
-  // Add this to enable dragging the window
   win.webContents.on("did-finish-load", () => {
     win.webContents.executeJavaScript(`
       document.body.style.appRegion = 'drag';
     `);
   });
 
-  registerGlobalShortcuts(commands);
+  registerGlobalShortcuts(config.commands);
 
   win.on("closed", () => {
     globalShortcut.unregisterAll();
@@ -136,11 +189,11 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
-
 app.on("window-all-closed", () => app.quit());
-
 app.on("will-quit", () => globalShortcut.unregisterAll());
-
 ipcMain.on("execute-command", (event, command) => {
   executeCommand(command);
+});
+ipcMain.on("open-config", (event, { configPath, textEditor }) => {
+  openConfigInEditor(configPath, textEditor);
 });

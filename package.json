@@ -12,6 +12,7 @@
     "electron": "^32.0.1"
   },
   "dependencies": {
-    "augmented-ui": "^2.0.0"
+    "augmented-ui": "^2.0.0",
+    "yargs": "^17.7.2"
   }
 }
