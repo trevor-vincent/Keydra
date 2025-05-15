@@ -1,16 +1,30 @@
 {
   "name": "keydra",
   "version": "1.0.0",
-  "description": "",
+  "description": "An Emacs-hydra inspired keybinding manager for organizing and executing shell commands",
   "main": "main.js",
   "bin": {
-    "keydra": "./bin/keydra.js"
+    "keydra": "bin/keydra.js"
   },
   "scripts": {
     "start": "electron ."
   },
-  "author": "",
+  "author": "Trevor Vincent",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trevor-vincent/Keydra.git"
+  },
+  "keywords": [
+    "keybinding",
+    "shortcut",
+    "command",
+    "launcher",
+    "electron",
+    "i3",
+    "linux"
+  ],
+  "homepage": "https://github.com/trevor-vincent/Keydra",
   "devDependencies": {
     "electron": "^32.0.1"
   },
