@@ -1,6 +1,6 @@
 {
   "name": "keydra",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "An Emacs-hydra inspired keybinding manager for organizing and executing shell commands",
   "main": "main.js",
   "bin": {
