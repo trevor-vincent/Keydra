@@ -21,14 +21,19 @@ function executeCommand(command) {
 }
 
 function openConfigInEditor(configPath, editor) {
-  const command = `${editor} "${configPath}"`;
-  const child = spawn(command, {
-    shell: true,
-    detached: true,
-    stdio: "ignore",
-  });
-  child.unref();
-  app.quit();
+  try {
+    const command = `${editor} "${configPath}"`;
+    console.log(`Executing: ${command}`);
+    const child = spawn(command, {
+      shell: true,
+      detached: true,
+      stdio: "inherit",
+    });
+    child.unref();
+    app.quit();
+  } catch (error) {
+    console.error(`Failed to open editor: ${error}`);
+  }
 }
 
 function registerGlobalShortcuts(commands) {
@@ -194,6 +199,14 @@ app.on("will-quit", () => globalShortcut.unregisterAll());
 ipcMain.on("execute-command", (event, command) => {
   executeCommand(command);
 });
-ipcMain.on("open-config", (event, { configPath, textEditor }) => {
-  openConfigInEditor(configPath, textEditor);
+ipcMain.on("open-config", (event, data) => {
+  console.log("Received open-config request with data:", data);
+  if (!data || !data.configPath) {
+    console.error("Missing configPath in open-config request");
+    return;
+  }
+  
+  const editor = data.textEditor || "nano";
+  console.log(`Opening config ${data.configPath} with editor ${editor}`);
+  openConfigInEditor(data.configPath, editor);
 });

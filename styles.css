@@ -8,12 +8,10 @@ body, html {
 }
 
 #cyberpunk-box {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #00d0ff;
-    box-shadow: 0 0 10px #00d0ff, inset 0 0 10px #00d0ff;
-    animation: pulse 2s infinite alternate;
     display: flex;
     flex-direction: column;
     color: #00d0ff;
@@ -24,6 +22,10 @@ body, html {
     font-size: 3em;
     margin: 20px 0;
     transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: underline;
+    position: relative;
+    z-index: 100; /* Ensure it's above other elements */
     /* animation: textPulse 2s infinite alternate; */
 }
 
@@ -31,6 +33,7 @@ body, html {
     color: #ffffff;
     text-shadow: 0 0 10px #00d0ff, 0 0 20px #00d0ff;
     cursor: pointer;
+    text-decoration: underline #ffffff;
 }
 
 #commandsContainer {
@@ -73,14 +76,7 @@ body, html {
     padding: 10px;
 }
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 10px #00d0ff, inset 0 0 10px #00d0ff;
-    }
-    100% {
-        box-shadow: 0 0 20px #00d0ff, inset 0 0 20px #00d0ff;
-    }
-}
+/* Removed pulse animation */
 
 @keyframes textPulse {
     0% {

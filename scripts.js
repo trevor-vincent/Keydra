@@ -4,18 +4,29 @@ let configPath = "";
 let textEditor = "nano";
 
 ipcRenderer.on("initialize", (event, { commands, title, configPath: cfgPath, textEditor: editor }) => {
-  document.getElementById("title").textContent = title;
+  document.getElementById("title-link").textContent = title;
   configPath = cfgPath;
   textEditor = editor || "nano";
   
   // Add click event to title to open config file
   const titleElement = document.getElementById("title");
+  const titleLink = document.getElementById("title-link");
   titleElement.style.cursor = "pointer";
   titleElement.title = "Click to edit config file";
-  titleElement.addEventListener("click", (event) => {
+  
+  // Make title more obviously clickable
+  titleElement.style.textDecoration = "underline";
+  
+  // Add console logging for debugging
+  console.log("Setting up title click handler with:", { configPath, textEditor });
+  
+  titleLink.addEventListener("click", (event) => {
     event.preventDefault();
+    console.log("Title clicked! Sending open-config with:", { configPath, textEditor });
     ipcRenderer.send("open-config", { configPath, textEditor });
   });
+  
+  // Title is already clickable to edit config file
   
   const container = document.getElementById("commandsContainer");
   container.innerHTML = "";
@@ -39,7 +50,12 @@ ipcRenderer.on("initialize", (event, { commands, title, configPath: cfgPath, tex
 
     commandLink.addEventListener("click", (event) => {
       event.preventDefault();
-      ipcRenderer.send("execute-command", cmd.command);
+      // If command name matches the config filename, open it in the editor
+      if (cmd.name === configPath.split('/').pop()) {
+        ipcRenderer.send("open-config", { configPath, textEditor });
+      } else {
+        ipcRenderer.send("execute-command", cmd.command);
+      }
     });
   });
 
