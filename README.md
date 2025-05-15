@@ -12,14 +12,28 @@ Inspired by emacs-hydra, Keydra addresses the challenge of remembering numerous 
 
 ## Installation
 
-Keydra requires Node.js and npm to run. Follow these steps to install:
+### Install from npm (Recommended)
+
+The easiest way to install Keydra is directly from npm:
+
+```bash
+# Install globally
+npm install -g keydra
+
+# Run from anywhere
+keydra --config=path/to/your/config.ini
+```
+
+### Manual Installation
+
+Alternatively, you can install from source:
 
 ```bash
 # Clone the repository
-git clone https://github.com/MindKingAI/keydra.git
+git clone https://github.com/trevor-vincent/Keydra.git
 
 # Navigate to the directory
-cd keydra
+cd Keydra
 
 # Install dependencies
 npm install
@@ -28,7 +42,7 @@ npm install
 npm start -- --config=path/to/your/config.ini
 ```
 
-You can also create a global link to run Keydra from anywhere:
+You can also create a global link to run Keydra from anywhere when installing from source:
 
 ```bash
 # Create a global link
@@ -99,6 +113,17 @@ bindsym $mod+b exec keydra --config ~/.config/keydra/bluetooth.ini --title "Blue
 # Launch applications keydra
 bindsym $mod+a exec keydra --config ~/.config/keydra/apps.ini --title "Applications"
 ```
+
+Important: If you're experiencing issues with keydra not being found, make sure to use the full path:
+
+```
+# Example using full path - adjust according to your npm global installation directory
+bindsym $mod+b exec /usr/local/bin/keydra --config ~/.config/keydra/bluetooth.ini --title "Bluetooth"
+# Or if using volta:
+bindsym $mod+b exec /home/yourusername/.volta/bin/keydra --config ~/.config/keydra/bluetooth.ini --title "Bluetooth"
+```
+
+You can find your keydra executable location with: `which keydra`
 
 ## Customizing Through Config Comments
 
